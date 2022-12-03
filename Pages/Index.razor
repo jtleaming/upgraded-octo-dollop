@@ -1,0 +1,54 @@
+﻿@page "/"
+
+<h1>Hello, world!</h1>
+
+<h2>@clientData</h2>
+<button @onclick="LoadClientData">Get Client Data</button>
+
+<h2>@employeeData</h2>
+<button @onclick="LoadEmployeeData">Get Employee Data</button>
+
+<h2>@allData</h2>
+<button @onclick="LoadAllData">Get All Data</button>
+
+<h2>@randomData</h2>
+<button @onclick="LoadRandom">Get Random Data</button>
+
+
+@code{
+    [Inject]public required IServiceWrapperFactory Factory { get; set; }
+    [Inject] public required ISplashTrackServicesWrapper<MyThirdService> MyThirdService { get; set; }
+    
+    private ISplashTrackServicesWrapper<MyService> myService;
+    private ISplashTrackServicesWrapper<MySecondService> mySecondService;
+
+    private string clientData = "";
+    private string employeeData = "";
+    private string allData = "";
+    private string randomData = "";
+
+    protected override void OnInitialized()
+    {
+        myService = Factory.GetWrapperForType<MyService>();
+        mySecondService = Factory.GetWrapperForType<MySecondService>();
+    }
+
+    private void LoadClientData()
+    {
+        clientData = myService.HttpGet(e => e.MyData("CLIENT_ID"));
+    }
+    private void LoadEmployeeData()
+    {
+        employeeData = mySecondService.HttpGet(e => e.MyData("EMPLOYEE_ID"));
+    }
+
+    private void LoadAllData()
+    {
+        allData = mySecondService.HttpGet(e => e.AllData);
+    }
+    
+    private void LoadRandom()
+    {
+        randomData = MyThirdService.HttpGet(t => t.SomeDataEndpoint);
+    }
+}
