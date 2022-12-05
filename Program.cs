@@ -75,22 +75,33 @@ public class ServiceWrapperFactory : IServiceWrapperFactory
 public interface ISplashTrackServicesWrapper<T> where T: IServiceWrapper, new()
 {
     string HttpGet(Func<T, string> getEndpoint, bool logException = true, bool useRun = true);
+    Task<T1> HttpGet<T1>(Func<T, string> getEndpoint, bool logException = true, bool useRun = true);
 }
 
 public class SplashTrackServicesWrapper<T> : ISplashTrackServicesWrapper<T> where T: IServiceWrapper, new()
 {
     protected string url;
     private T _serviceWrapper;
+    private HttpClient _client = new();
+
     public SplashTrackServicesWrapper()
     {
         var serviceWrapper = new T();
         url = serviceWrapper.Endpoint;
         _serviceWrapper = serviceWrapper;
+
+        _client.BaseAddress = new Uri(_serviceWrapper.Endpoint);
     }
 
     public string HttpGet(Func<T,string> getEndpoint, bool logException = true, bool useRun = true)
     {
         return getEndpoint(_serviceWrapper);
+    }
+
+    public Task<T1> HttpGet<T1>(Func<T, string> getEndpoint, bool logException = true, bool useRun = true)
+    {
+        var endpoint = getEndpoint(_serviceWrapper);
+        return _client.GetFromJsonAsync<T1>(endpoint);
     }
 }
 
