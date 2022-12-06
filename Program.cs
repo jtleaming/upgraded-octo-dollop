@@ -3,7 +3,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 builder.Services.AddScoped<IServiceWrapperFactory, ServiceWrapperFactory>();
-builder.Services.AddScoped<ISplashTrackServicesWrapper<MyThirdService>, SplashTrackServicesWrapper<MyThirdService>>();
+builder.Services.AddScoped(typeof(ISplashTrackServicesWrapper<>),typeof(SplashTrackServicesWrapper<>));
 
 var app = builder.Build();
 

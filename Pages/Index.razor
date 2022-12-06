@@ -17,10 +17,10 @@
 @code{
     [Inject]public required IServiceWrapperFactory Factory { get; set; }
     [Inject] public required ISplashTrackServicesWrapper<MyThirdService> MyThirdService { get; set; }
+    [Inject] public required  ISplashTrackServicesWrapper<PayrollConfiguration> PayrollConfig { get; set; }
     
     private ISplashTrackServicesWrapper<MyService> myService;
     private ISplashTrackServicesWrapper<MySecondService> mySecondService;
-    private ISplashTrackServicesWrapper<PayrollConfiguration> payrollConfig;
 
     private string clientData = "";
     private string employeeData = "";
@@ -31,12 +31,12 @@
     {
         myService = Factory.GetWrapperForType<MyService>();
         mySecondService = Factory.GetWrapperForType<MySecondService>();
-        payrollConfig = Factory.GetWrapperForType<PayrollConfiguration>();
+        PayrollConfig = Factory.GetWrapperForType<PayrollConfiguration>();
     }
 
     private async Task GetEmployeeConfig(string eeId)
     {
-        var eeConfig = await payrollConfig
+        var eeConfig = await PayrollConfig
             .HttpGet<ConfiguratorEmployee>(c => c.GetEmployeeConfig(eeId));
     }
 
