@@ -15,12 +15,10 @@
 <button @onclick="LoadRandom">Get Random Data</button>
 
 @code{
-    [Inject]public required IServiceWrapperFactory Factory { get; set; }
-    [Inject] public required ISplashTrackServicesWrapper<MyThirdService> MyThirdService { get; set; }
     [Inject] public required  ISplashTrackServicesWrapper<PayrollConfiguration> PayrollConfig { get; set; }
-    
-    private ISplashTrackServicesWrapper<MyService> myService;
-    private ISplashTrackServicesWrapper<MySecondService> mySecondService;
+    [Inject] public required ISplashTrackServicesWrapper<MyThirdService> MyThirdService { get; set; }
+    [Inject] public required ISplashTrackServicesWrapper<MyService> MyService { get; set; }
+    [Inject] public required  ISplashTrackServicesWrapper<MySecondService> MySecondService { get; set; }
 
     private string clientData = "";
     private string employeeData = "";
@@ -29,9 +27,6 @@
 
     protected override void OnInitialized()
     {
-        myService = Factory.GetWrapperForType<MyService>();
-        mySecondService = Factory.GetWrapperForType<MySecondService>();
-        PayrollConfig = Factory.GetWrapperForType<PayrollConfiguration>();
     }
 
     private async Task GetEmployeeConfig(string eeId)
@@ -42,16 +37,16 @@
 
     private void LoadClientData()
     {
-        clientData = myService.HttpGet(e => e.MyData("CLIENT_ID"));
+        clientData = MyService.HttpGet(e => e.MyData("CLIENT_ID"));
     }
     private void LoadEmployeeData()
     {
-        employeeData = mySecondService.HttpGet(e => e.MyData("EMPLOYEE_ID"));
+        employeeData = MySecondService.HttpGet(e => e.MyData("EMPLOYEE_ID"));
     }
 
     private void LoadAllData()
     {
-        allData = mySecondService.HttpGet(e => e.AllData);
+        allData = MySecondService.HttpGet(e => e.AllData);
     }
     
     private void LoadRandom()

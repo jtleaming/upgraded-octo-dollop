@@ -2,7 +2,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.AddScoped<IServiceWrapperFactory, ServiceWrapperFactory>();
 builder.Services.AddScoped(typeof(ISplashTrackServicesWrapper<>),typeof(SplashTrackServicesWrapper<>));
 
 var app = builder.Build();
@@ -61,20 +60,10 @@ public struct MyThirdService : IServiceWrapper
     public string SomeDataEndpoint => $"Random Data End Point {Random.Shared.Next()}";
 }
 
-public interface IServiceWrapperFactory
-{
-    public ISplashTrackServicesWrapper<R> GetWrapperForType<R>() where R : IServiceWrapper, new();
-}
-
-public class ServiceWrapperFactory : IServiceWrapperFactory
-{
-    public ISplashTrackServicesWrapper<R> GetWrapperForType<R>() where R: IServiceWrapper, new() 
-        => new SplashTrackServicesWrapper<R>();
-}
-
 public interface ISplashTrackServicesWrapper<T> where T: IServiceWrapper, new()
 {
     string HttpGet(Func<T, string> getEndpoint, bool logException = true, bool useRun = true);
+
     Task<T1> HttpGet<T1>(Func<T, string> getEndpoint, bool logException = true, bool useRun = true);
 }
 
@@ -104,7 +93,6 @@ public class SplashTrackServicesWrapper<T> : ISplashTrackServicesWrapper<T> wher
         return _client.GetFromJsonAsync<T1>(endpoint);
     }
 }
-
 
 public static class RunEnvironment
 {
